@@ -7,17 +7,19 @@ RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/li
 
 # Cache deps — build a stub main so dep compilation is cached independently of src changes
 COPY Cargo.toml Cargo.lock ./
+# Strip xtask workspace member — not needed in Docker build context
+RUN sed -i 's/, \"xtask\"//g; s/\"xtask\", //g; s/\"xtask\"//g' Cargo.toml
 RUN --mount=type=cache,id=rustifi-cargo-registry,target=/usr/local/cargo/registry,sharing=locked \
     --mount=type=cache,id=rustifi-cargo-git,target=/usr/local/cargo/git,sharing=locked \
     --mount=type=cache,id=rustifi-cargo-target,target=/app/target,sharing=locked \
-    mkdir src && echo "fn main() {}" > src/main.rs && cargo build --release --locked && rm -rf src
+    mkdir src && echo "fn main() {}" > src/main.rs && cargo build --release --locked -p rustifi && rm -rf src
 
 # Build real binary
 COPY src/ src/
 RUN --mount=type=cache,id=rustifi-cargo-registry,target=/usr/local/cargo/registry,sharing=locked \
     --mount=type=cache,id=rustifi-cargo-git,target=/usr/local/cargo/git,sharing=locked \
     --mount=type=cache,id=rustifi-cargo-target,target=/app/target,sharing=locked \
-    touch src/main.rs && cargo build --release --locked && cp target/release/unifi /usr/local/bin/unifi
+    touch src/main.rs && cargo build --release --locked -p rustifi && cp target/release/unifi /usr/local/bin/unifi
 
 # Runtime — minimal debian image with ca-certificates for TLS to the UniFi controller
 FROM debian:bookworm-slim
@@ -42,4 +44,4 @@ LABEL io.modelcontextprotocol.server.name="tv.tootie/rustifi"
 
 # Entrypoint runs as root, validates env, chowns /data, then execs as 1000:1000
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["unifi", "serve", "mcp"]
+CMD ["serve", "mcp"]

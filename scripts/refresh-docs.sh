@@ -115,8 +115,8 @@ main() {
   if [[ "$DRY_RUN" != true ]]; then sd="$(make_tmpdir)"; bs="$sd/before.sha256"; as="$sd/after.sha256"; snapshot_references "$bs"; fi
   mkdir -p "$REF_DIR/unifi/docs" "$REF_DIR/unifi/repos" "$REF_DIR/mcp/docs" "$REF_DIR/mcp/repos"
   if [[ "$SKIP_CRAWL" != true ]]; then
-    crawl_docs "https://developer.ui.com"           "developer.ui.com"        "unifi/docs"
-    crawl_docs "https://modelcontextprotocol.io"    "modelcontextprotocol.io" "mcp/docs"
+    crawl_docs "https://developer.ui.com" || log "WARN: unifi docs crawl failed, continuing"           "developer.ui.com"        "unifi/docs"
+    crawl_docs "https://modelcontextprotocol.io"    "modelcontextprotocol.io" "mcp/docs" || log "WARN: mcp docs crawl failed, continuing"
   fi
   if [[ "$SKIP_REPOMIX" != true ]]; then
     # Community UniFi API reference (most practical API docs available)

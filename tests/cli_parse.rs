@@ -114,3 +114,16 @@ fn empty_args_returns_error() {
     let result = parse(&[]);
     assert!(result.is_err(), "empty args should fail");
 }
+
+#[test]
+fn setup_plugin_hook_parse_is_recognized() {
+    let args = vec!["setup".into(), "plugin-hook".into(), "--no-repair".into()];
+    let parsed = rustifi::setup::SetupCommand::parse(&args).unwrap();
+    assert!(matches!(
+        parsed,
+        Some((
+            rustifi::setup::SetupCommand::PluginHook { no_repair: true },
+            false
+        ))
+    ));
+}

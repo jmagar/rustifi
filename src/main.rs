@@ -43,6 +43,9 @@ async fn main() -> Result<()> {
         let config = Config::load().unwrap_or_default();
         return cli::doctor::run_doctor(&config, json).await;
     }
+    if let Some((command, json)) = rustifi::setup::SetupCommand::parse(&args)? {
+        return rustifi::setup::run(command, json);
+    }
 
     let stdio_mode = matches!(args.as_slice(), [c] if c == "mcp");
     let serve_mode = args.is_empty()
@@ -158,6 +161,9 @@ fn print_usage() {
   unifi [serve]                         Start MCP HTTP server (port 40030)
   unifi mcp                             Start MCP stdio transport
   unifi doctor [--json]                 Pre-flight environment check
+  unifi setup check [--json]            Check local plugin setup
+  unifi setup repair [--json]           Repair local plugin setup
+  unifi setup plugin-hook [--no-repair] [--json]
 
 Network:
   unifi clients [--json]                Connected wireless and wired clients

@@ -3,6 +3,9 @@
 # Runs as root, validates config, sets up /data, then exec's as USER 1000:1000
 set -e
 
+SERVICE_NAME="unifi"
+BINARY="/usr/local/bin/${SERVICE_NAME}"
+
 DATA_DIR="${DATA_DIR:-/data}"
 
 # Validate required environment variables
@@ -32,4 +35,4 @@ if [ -f "${DATA_DIR}/.env" ]; then
 fi
 
 # Drop to service user and exec the binary
-exec gosu 1000:1000 "$@"
+exec gosu 1000:1000 "${BINARY}" "$@"

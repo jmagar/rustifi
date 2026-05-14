@@ -1,6 +1,7 @@
 pub mod app;
 pub mod config;
 pub mod mcp;
+pub mod setup;
 pub mod unifi;
 
 #[cfg(any(test, feature = "test-support"))]

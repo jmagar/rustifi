@@ -294,10 +294,12 @@ async fn check_upstream(url: &str, api_key: &str, skip_tls: bool) -> DoctorCheck
 
 fn check_port_available(host: &str, port: u16) -> DoctorCheck {
     let name = format!("MCP port {port}");
-    // Try to bind — if we can, it's free
-    let bind_addr = format!("{host}:{port}");
-    // Fall back to 0.0.0.0 for the probe so it catches any interface
-    let probe_addr = format!("0.0.0.0:{port}");
+    let probe_host = if host == "127.0.0.1" || host == "localhost" {
+        host
+    } else {
+        "0.0.0.0"
+    };
+    let probe_addr = format!("{probe_host}:{port}");
     match TcpListener::bind(&probe_addr) {
         Ok(_) => DoctorCheck::pass("mcp", name, "available"),
         Err(_) => DoctorCheck::warn(

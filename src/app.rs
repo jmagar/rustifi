@@ -36,7 +36,9 @@ impl UnifiService {
     }
 
     pub async fn events(&self, limit: Option<usize>) -> Result<Value> {
-        self.client.events().await
+        let mut events = self.client.events().await?;
+        truncate_data_array(&mut events, limit);
+        Ok(events)
     }
 
     pub async fn sysinfo(&self) -> Result<Value> {
@@ -45,5 +47,14 @@ impl UnifiService {
 
     pub async fn me(&self) -> Result<Value> {
         self.client.me().await
+    }
+}
+
+fn truncate_data_array(value: &mut Value, limit: Option<usize>) {
+    let Some(limit) = limit else {
+        return;
+    };
+    if let Some(items) = value.get_mut("data").and_then(Value::as_array_mut) {
+        items.truncate(limit);
     }
 }
