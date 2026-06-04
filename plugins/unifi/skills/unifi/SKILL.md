@@ -101,34 +101,34 @@ unifi(action="me")
 
 ## Tier 2 — CLI Binary (fallback when MCP is unavailable)
 
-Binary: `/home/jmagar/workspace/rustifi/target/release/unifi`
+Binary: `/home/jmagar/workspace/rustifi/target/release/runifi`
 
 If the binary does not exist, build it first:
 ```bash
 cd /home/jmagar/workspace/rustifi && cargo build --release
 # or run without building:
-cargo run --bin unifi -- <command>
+cargo run --bin runifi -- <command>
 ```
 
 | command | output |
 |---------|--------|
-| `unifi clients` | HOSTNAME / MAC / IP / TYPE / SSID or PORT |
-| `unifi devices` | NAME / TYPE / MAC / STATE / IP |
-| `unifi wlans` | SSID / BAND / VLAN / SECURITY |
-| `unifi health` | subsystem status with AP and client counts |
-| `unifi alarms` | `[key] message` per alarm |
-| `unifi events [--limit N]` | `[key] message` per event |
-| `unifi sysinfo` | Version, Build, Hostname, Uptime, Timezone |
-| `unifi me` | Name, Email, Role, Super admin flag |
+| `runifi clients` | HOSTNAME / MAC / IP / TYPE / SSID or PORT |
+| `runifi devices` | NAME / TYPE / MAC / STATE / IP |
+| `runifi wlans` | SSID / BAND / VLAN / SECURITY |
+| `runifi health` | subsystem status with AP and client counts |
+| `runifi alarms` | `[key] message` per alarm |
+| `runifi events [--limit N]` | `[key] message` per event |
+| `runifi sysinfo` | Version, Build, Hostname, Uptime, Timezone |
+| `runifi me` | Name, Email, Role, Super admin flag |
 
 All commands accept `--json` for raw JSON output.
 
 ```bash
 # Examples
-unifi clients
-unifi devices --json
-unifi events --limit 20
-unifi health
+runifi clients
+runifi devices --json
+runifi events --limit 20
+runifi health
 ```
 
 ---
