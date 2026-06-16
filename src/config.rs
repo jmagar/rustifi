@@ -186,6 +186,13 @@ impl Config {
             "UNIFI_MCP_AUTH_ADMIN_EMAIL",
             &mut config.mcp.auth.admin_email,
         );
+        // Auth mode: 'oauth' enables the full OAuth flow; anything else stays bearer.
+        if let Ok(v) = std::env::var("UNIFI_MCP_AUTH_MODE") {
+            config.mcp.auth.mode = match v.trim().to_lowercase().as_str() {
+                "oauth" => AuthMode::OAuth,
+                _ => AuthMode::Bearer,
+            };
+        }
 
         // Disable-auth compatibility alias
         if std::env::var("UNIFI_MCP_DISABLE_HTTP_AUTH")
